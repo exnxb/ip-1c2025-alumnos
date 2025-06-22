@@ -6,13 +6,25 @@ from ..persistence import repositories
 from ..utilities import translator
 from django.contrib.auth import get_user
 
-# función que devuelve un listado de cards. Cada card representa una imagen de la API de Pokemon
+# Esta función arma el listado principal de Pokémon que se muestran en la galería del home y en el buscador.
 def getAllImages():
-    # debe ejecutar los siguientes pasos:
-    # 1) traer un listado de imágenes crudas desde la API (ver transport.py)
-    # 2) convertir cada img. en una card.
-    # 3) añadirlas a un nuevo listado que, finalmente, se retornará con todas las card encontradas.
-    pass
+    # 1. Llama a una función del archivo transport.py que se encarga de conectarse con la PokéAPI
+    #    y devuelve una lista con los datos crudos de varios Pokémon.
+    raw_data = transport.getAllImages() or []  # Agregamos "or []" para evitar errores si la API no responde. Ademas cambiamos el nombre de la funcion get_pokemon a getAllimages como figura en transport.py
+
+    cards = []  # 2. Creamos un nuevo listado donde vamos a guardar cada Pokémon ya transformado en una "Card"
+
+    # 3. Recorremos todos los Pokémon crudos(datos json sin convertir) que llegaron desde la API...
+    for poke in raw_data:
+        # 4. A cada uno lo transformamos en una "Card" usando el traductor definido en translator.py
+        #    La función "to_card()" se encarga de tomar solo los campos que nos interesan (imagen, nombre, tipo, etc.)
+        card = translator.fromRequestIntoCard(poke)
+
+        # 5. Agregamos esa Card al listado final
+        cards.append(card)
+
+    # 6. Devolvemos el listado de Cards listo para ser usado en el home, el buscador y los filtros
+    return cards
 
 # función que filtra según el nombre del pokemon.
 def filterByCharacter(name):
@@ -29,8 +41,9 @@ def filterByType(type_filter):
     filtered_cards = []
 
     for card in getAllImages():
-        # debe verificar si la casa de la card coincide con la recibida por parámetro. Si es así, se añade al listado de filtered_cards.
-        filtered_cards.append(card)
+        # Compara en minúsculas para evitar errores de mayúsculas
+        if type_filter.lower() in [t.lower() for t in card.types]:
+            filtered_cards.append(card)
 
     return filtered_cards
 

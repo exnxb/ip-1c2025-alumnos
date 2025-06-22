@@ -10,34 +10,35 @@
             <button class="btn btn-outline-success" type="submit">Buscar</button>
         </form>
     </div>
+<!-- Contenedor que alinea los botones de tipo(filtros) en el centro con espacio entre ellos -->        
+<div class="d-flex justify-content-center gap-2 mb-3">
 
-    <div class="d-flex gap-1 col-2 mx-auto mb-3">
-        <form method="post" action="{% url 'filter_by_type' %}">
-            {% csrf_token %}
-            <input type="hidden" name="type" value="fire">
-            <button type="submit" class="btn btn-danger">FUEGO</button>
-        </form>
+    <!-- 🔥 Botón para filtrar por pokémon de tipo FUEGO -->
+    <a href="{% url 'filter_by_type' %}?type=fire">
+        <button class="btn btn-danger">FUEGO</button>
+    </a>
 
-        <form method="post" action="{% url 'filter_by_type' %}">
-            {% csrf_token %}
-            <input type="hidden" name="type" value="water">
-            <button type="submit" class="btn btn-primary">AGUA</button>
-        </form>
+    <!-- 💧 Botón para filtrar por pokémon de tipo AGUA -->
+    <a href="{% url 'filter_by_type' %}?type=water">
+        <button class="btn btn-primary">AGUA</button>
+    </a>
 
-        <form method="post" action="{% url 'filter_by_type' %}">
-            {% csrf_token %}
-            <input type="hidden" name="type" value="grass">
-            <button type="submit" class="btn btn-success">PLANTA</button>
-        </form>
-    </div>
+    <!-- 🌿 Botón para filtrar por pokémon de tipo PLANTA -->
+    <a href="{% url 'filter_by_type' %}?type=grass">
+        <button class="btn btn-success">PLANTA</button>
+    </a>
+
+</div>
 
         <div class="row row-cols-1 row-cols-md-3 g-4">
+        <p class="text-center">Total: {{ images|length }} pokémon encontrados</p>
         {% if images|length == 0 %}
         <h2 class="text-center">La búsqueda no arrojó resultados...</h2>
         {% else %} {% for img in images %}
         <div class="col">
-            <!-- evaluar si la imagen pertenece al tipo fuego, agua o planta -->
-            <div class="card border-success mb-3 ms-5" style="max-width: 540px; ">
+            
+            <!-- Borde dinámico según tipo: verde (grass), rojo (fire), azul (water), naranja (otros) -->
+        <div class="card {% if 'grass' in img.types %}border-success{% elif 'fire' in img.types %}border-danger{% elif 'water' in img.types %}border-primary{% else %}border-warning{% endif %} mb-3 ms-5" style="max-width: 540px;">
                  <div class="row g-0">
                      <div class="col-md-4">
                          <img src="{{ img.image }}" class="card-img-top"alt="imagen">
