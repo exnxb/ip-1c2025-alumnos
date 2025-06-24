@@ -1,3 +1,25 @@
+#---------------------------------------------------------------------------------------------------------------------------------------
+
+# Este archivo se conecta con la API, y obtiene los datos de cada Pokémon en formato JSON."
+
+# Un JSON es un formato utilizado para guardar e intercambiar datos. Está formado por pares clave-valor."
+
+"""
+Ejemplo:
+
+{
+  "pokemon": [
+    {
+      "nombre": "Charizard",
+      "tipo": "Fuego"
+    },
+  ]
+}
+
+"""
+#---------------------------------------------------------------------------------------------------------------------------------------
+
+
 # capa de transporte/comunicación con otras interfaces o sistemas externos.
 
 import requests
@@ -5,7 +27,8 @@ from ...config import config
 
 # comunicación con la REST API.
 # este método se encarga de "pegarle" a la API y traer una lista de objetos JSON.
-def getAllImages():
+
+def get_AllImages():   # Se cambió el nombre de la función getAllImages(), por get_AllImages() para evitar confusiones con el archivo services.py
     json_collection = []
     for id in range(1, 30):
         response = requests.get(config.STUDENTS_REST_API_URL + str(id))

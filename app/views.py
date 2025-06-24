@@ -1,16 +1,14 @@
 #---------------------------------------------------------------------------------------------------------------------------------------
 
-"Este archivo es como una lista en donde Django ve funciones concretas que responden a cada acción del usuario en la aplicación"
-
-# El usuario entra a taringa.net, y presiona el botón de la "Home" (/home):
-                                                                           "La dirección será taringa.net/home"
-# Django busca en urls.py que función en VIEWS responde a la url de /home:  
-                                                                           "Por ejemplo home (request)"
-# Ejecuta esa función, obteniendo datos
-      
-# Finalmente combina el template HTML y los datos (como imagenes, textos, redireccionando,etc); devolviendo una página web.
-
-"Todas las views van a terminar respondiendo con una página web (HTML)."
+"Este archivo responde a las acciones del usuario en la aplicación."
+# El usuario entra a la página y presiona en "Home":
+"La dirección del path será: /home"
+# Django busca en urls.py que función en VIEWS responde a /home:  
+"En urls.py: path('home/', views.home, name='home'),"
+# Ejecuta la función que corresponde (home(request)), para que realize el trabajo:
+"En views.py: def home (request)"
+# Combina el template HTML y los datos obtenidos (ya sean imagenes, textos, redireccionando, etc); devolviendo una página web.
+"Una vez ejecutada la función home (request), devuelve una página web (HTML)."
 
 #---------------------------------------------------------------------------------------------------------------------------------------
 
@@ -26,14 +24,14 @@ def index_page(request):
 
 # esta función obtiene 2 listados: uno de las imágenes de la API (images) y otro de favoritos, ambos en formato Card, y los dibuja en el template 'home.html'.
 def home(request):
-    images = services.getAllImages()    ###: Cambiamos la lista vacía por una llamada a la función "getAllImages()"".
+    images = services.getAllImages()    ###: Cambiamos la lista vacía por una llamada a la función "getAllImages()", definida en services.py.
     favourite_list = []
 
     return render(request, 'home.html', { 'images': images, 'favourite_list': favourite_list })
 
-""" ###: Esta línea llama a la función getAllImages(), que está definida en el archivo services.py, que se encuentra dentro de la carpeta Layers. Lo que va a hacer es:
+""" ###: Esta línea llama a la función getAllImages(), que está definida en el archivo services.py, que se encuentra dentro de la carpeta "layers". Lo que va a hacer es:
                     1) Busca a los pokémons en la API
-                    2) Luego toma los datos de cada uno, los ordena y los pone dentro de tarjetas pokémon separadas
+                    2) Luego toma los datos, los ordena y los pone dentro de tarjetas
                     3) Guarda una a una cada tarjeta en una lista, y las muestra."""
 
 

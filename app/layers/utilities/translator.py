@@ -1,8 +1,13 @@
-# translator: se refiere a un componente o conjunto de funciones que se utiliza para convertir o "mapear" datos de un formato o estructura a otro. Esta conversión se realiza típicamente cuando se trabaja con diferentes capas de una aplicación, como por ejemplo, entre la capa de datos y la capa de presentación, o entre dos modelos de datos diferentes.
+#---------------------------------------------------------------------------------------------------------------------------------------
+
+"Este archivo toma datos en formato JSON y los transforma en objetos ordenados (Cards) para facilitar su manejo y visualización.
+
+#---------------------------------------------------------------------------------------------------------------------------------------
+
 import ast
 from app.layers.utilities.card import Card
 
-# Usado cuando la información viene de la API, para transformarla en una Card.
+# Recibe la información JSON de la API, y la transforma en una Card.
 def fromRequestIntoCard(poke_data):
     card = Card(
         id=poke_data.get('id'),

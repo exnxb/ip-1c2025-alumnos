@@ -1,3 +1,11 @@
+#---------------------------------------------------------------------------------------------------------------------------------------
+"""
+Este archivo recibe pedidos desde views.py (como por ejemplo buscar tal pokémon, filtrar por nombre, guardarlo, etc); se conecta con transport.py para solicitarle la información (en formato JSON), 
+y luego organiza los datos obtenidos en tarjetas, para mostrar en la web.
+"""""
+#---------------------------------------------------------------------------------------------------------------------------------------
+
+
 # capa de servicio/lógica de negocio
 
 from ..transport import transport
@@ -9,10 +17,13 @@ from django.contrib.auth import get_user
 # función que devuelve un listado de cards. Cada card representa una imagen de la API de Pokemon
 def getAllImages():
     # debe ejecutar los siguientes pasos:
-    # 1) traer un listado de imágenes crudas desde la API (ver transport.py)
-    # 2) convertir cada img. en una card.
-    # 3) añadirlas a un nuevo listado que, finalmente, se retornará con todas las card encontradas.
-    pass
+    json_pokemons = transport.get_AllImages() # 1) traer un listado de imágenes crudas desde la API (ver transport.py)
+    lista_de_tarjetas = [] # lista vacía para ir guardando las tarjetas 
+    for dato in json_pokemons: # 2) convertir cada JSON en una card. Voy a recorrer uno a uno los objetos JSON en la lista que devuelve get_AllImages() (en transport.py)
+        tarjeta = translator.fromRequestIntoCard(dato) # convierto el JSON actual (variable dato) en una tarjeta con la función fromRequestIntoCard(dato) (en translator.py)
+        lista_de_tarjetas.append(tarjeta) # 3) añado la tarjeta al listado 
+    return lista_de_tarjetas # finalmente retorno todas las tarjetas generadas.
+    # Se borra el "pass", cuya función, al estar el código de la función ya completo, es innecesaria
 
 # función que filtra según el nombre del pokemon.
 def filterByCharacter(name):
