@@ -14,15 +14,14 @@ from ..persistence import repositories
 from ..utilities import translator
 from django.contrib.auth import get_user
 
-# función que devuelve un listado de cards. Cada card representa una imagen de la API de Pokemon
+# Esta función arma el listado principal de Pokémon que se muestran en la galería del home y en el buscador.
 def getAllImages():
-    # debe ejecutar los siguientes pasos:
-    json_pokemons = transport.get_AllImages() # 1) traer un listado de imágenes crudas desde la API (ver transport.py)
-    lista_de_tarjetas = [] # lista vacía para ir guardando las tarjetas 
-    for dato in json_pokemons: # 2) convertir cada JSON en una card. Voy a recorrer uno a uno los objetos JSON en la lista que devuelve get_AllImages() (en transport.py)
-        tarjeta = translator.fromRequestIntoCard(dato) # convierto el JSON actual (variable dato) en una tarjeta con la función fromRequestIntoCard(dato) (en translator.py)
-        lista_de_tarjetas.append(tarjeta) # 3) añado la tarjeta al listado 
-    return lista_de_tarjetas # finalmente retorno todas las tarjetas generadas.
+    json_pokemons = transport.get_AllImages() or [] # 1) Llama a la  función "get_AllImages()", del archivo "transport.py", la cual se conecta con la API y devuelve el listado de imágenes crudas (JSON). Agregamos "or []" para evitar errores si la API no responde.
+    lista_de_tarjetas = [] # lista vacía para ir guardando cada Pokémon ya transformado en una tarjeta ("Card")
+    for dato in json_pokemons: # 2) Recorre cada objeto JSON (osea cada Pokémon en forma de información) de la lista que devuelve get_AllImages(), y los convierte uno a uno en una card.
+        tarjeta = translator.fromRequestIntoCard(dato) #3) llama a la función fromRequestIntoCard(dato), definida en translator.py, y convierte el JSON actual (variable "dato") en una tarjeta
+        lista_de_tarjetas.append(tarjeta) # 4) Añade la tarjeta al listado "lista_de_tarjetas"  
+    return lista_de_tarjetas # 5) Por último, devuelve todas las tarjetas generadas.
     # Se borra el "pass", cuya función, al estar el código de la función ya completo, es innecesaria
 
 # función que filtra según el nombre del pokemon.
@@ -40,8 +39,9 @@ def filterByType(type_filter):
     filtered_cards = []
 
     for card in getAllImages():
-        # debe verificar si la casa de la card coincide con la recibida por parámetro. Si es así, se añade al listado de filtered_cards.
-        filtered_cards.append(card)
+        # Compara en minúsculas para evitar errores de mayúsculas
+        if type_filter.lower() in [t.lower() for t in card.types]:
+            filtered_cards.append(card)
 
     return filtered_cards
 
