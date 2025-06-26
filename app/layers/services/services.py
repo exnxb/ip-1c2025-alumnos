@@ -17,6 +17,7 @@ from django.contrib.auth import get_user
 # Esta función arma el listado principal de Pokémon que se muestran en la galería del home y en el buscador.
 def getAllImages():
     json_pokemons = transport.get_AllImages() or [] # 1) Llama a la  función "get_AllImages()", del archivo "transport.py", la cual se conecta con la API y devuelve el listado de imágenes crudas (JSON). Agregamos "or []" para evitar errores si la API no responde.
+    print(f"Cantidad de pokémon en json_pokemons: {len(json_pokemons)}") # Print para corroborar si la cantidad de pokémones que llegan desde la API y la que se muestra en el template están correctamente sincronizadas.
     lista_de_tarjetas = [] # lista vacía para ir guardando cada Pokémon ya transformado en una tarjeta ("Card")
     for dato in json_pokemons: # 2) Recorre cada objeto JSON (osea cada Pokémon en forma de información) de la lista que devuelve get_AllImages(), y los convierte uno a uno en una card.
         tarjeta = translator.fromRequestIntoCard(dato) #3) llama a la función fromRequestIntoCard(dato), definida en translator.py, y convierte el JSON actual (variable "dato") en una tarjeta

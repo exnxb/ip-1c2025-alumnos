@@ -30,7 +30,7 @@ from ...config import config
 
 def get_AllImages():   # Se cambió el nombre de la función getAllImages(), por get_AllImages() para evitar confusiones con el archivo services.py
     json_collection = []
-    for id in range(1, 30):
+    for id in range(1, 152):   # Este es el rango que recorre la API (osea los pokémones que va a mostrar). Se ampliá el rango (originalmente 30) para mostrar los de la primera generación (151) 
         response = requests.get(config.STUDENTS_REST_API_URL + str(id))
 
         # si la búsqueda no arroja resultados, entonces retornamos una lista vacía de elementos.    

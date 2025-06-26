@@ -1,6 +1,6 @@
 #---------------------------------------------------------------------------------------------------------------------------------------
 
-"Este archivo toma datos en formato JSON y los transforma en objetos ordenados (Cards) para facilitar su manejo y visualización.
+"Este archivo toma datos en formato JSON y los transforma en objetos ordenados (Cards) para facilitar su manejo y visualización."
 
 #---------------------------------------------------------------------------------------------------------------------------------------
 
