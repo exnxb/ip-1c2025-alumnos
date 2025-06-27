@@ -25,15 +25,19 @@ def getAllImages():
     return lista_de_tarjetas # 5) Por último, devuelve todas las tarjetas generadas.
     # Se borra el "pass", cuya función, al estar el código de la función ya completo, es innecesaria
 
-# función que filtra según el nombre del pokemon.
+
+# función que filtra por el nombre del pokemon, la lista que devuelve la función getAllImages().
 def filterByCharacter(name):
-    filtered_cards = []
-
-    for card in getAllImages():
-        # debe verificar si el name está contenido en el nombre de la card, antes de agregarlo al listado de filtered_cards.
-        filtered_cards.append(card)
-
-    return filtered_cards
+    name = name.lower()  # Normaliza el texto ingresado, ignorando las mayúsculas para evitar cualquier error
+    tarjetas_filtradas = []  # Lista para guardar los resultados que coinciden con la búsqueda
+    tarjetas = getAllImages()
+    if not name:   # Maneja el caso en que se haga una búsqueda sin ingresar ningún nombre, devolviendo la lista completa
+        return tarjetas
+    for tarjeta in tarjetas:   # Los objetos de la lista tienen atributos, como por ejemplo "name" en "tarjeta.name"
+        nombre_de_tarjeta = tarjeta.name.lower()
+        if name in nombre_de_tarjeta:  # Compara el nombre ingresado con los de la lista
+            tarjetas_filtradas.append(tarjeta)
+    return tarjetas_filtradas   # Devuelve solo las tarjetas que coinciden con el nombre buscado.
 
 # función que filtra las cards según su tipo.
 def filterByType(type_filter):
