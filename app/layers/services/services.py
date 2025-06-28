@@ -39,6 +39,8 @@ def filterByCharacter(name):
             tarjetas_filtradas.append(tarjeta)
     return tarjetas_filtradas   # Devuelve solo las tarjetas que coinciden con el nombre buscado.
 
+
+
 # función que filtra las cards según su tipo.
 def filterByType(type_filter):
     filtered_cards = []

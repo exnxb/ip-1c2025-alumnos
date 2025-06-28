@@ -1,6 +1,6 @@
 #---------------------------------------------------------------------------------------------------------------------------------------
 
-"Este archivo responde a las acciones del usuario en la aplicación."
+"Este archivo (las vistas) es el controlador. Con él, Django responde a las solicitudes del navegador del usuario en la aplicación. "
 # El usuario entra a la página y presiona en "Home":
 "La dirección del path será: /home"
 # Django busca en urls.py que función en VIEWS responde a /home:  
@@ -15,14 +15,14 @@
 # capa de vista/presentación
 
 from django.shortcuts import redirect, render
-from .layers.services import services     # Dentro del proyecto está la carpeta "layers", y allí hay un archivo llamado "services.py".Lo importo con el nombre "services"
+from .layers.services import services     # Es el módulo. Dentro del proyecto está la carpeta "layers", y allí hay un archivo llamado "services.py". Lo importo con el nombre "services"
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 
 def index_page(request):
     return render(request, 'index.html')
 
-# esta función obtiene 2 listados: uno de las imágenes de la API (images) y otro de favoritos, ambos en formato Card, y los dibuja en el template 'home.html'.
+# Esta función obtiene 2 listados: uno de las imágenes de la API (images) y otro de favoritos, ambos en formato Card, y los dibuja en el template 'home.html'.
 def home(request):
     images = services.getAllImages() or []    ###: Cambiamos la lista vacía por una llamada a la función "getAllImages()"". Se agrega  "or []"" para que devuelva siempre un iterable, aunque esté vacío (osea evita un valor None o inválido).
     favourite_list = []
@@ -34,51 +34,28 @@ def home(request):
                     3) Guarda una a una cada tarjeta en una lista, y las muestra."""
 
 
-# función utilizada en el buscador.
+# Función que maneja las búsquedas por nombre de cada Pokémon. METODO POST (trabaja con los formularios enviados, no visibles en la url)
 def search(request):
     # Guardo lo que escribió el usuario en el campo de búsqueda
-    name = request.POST.get('query', '')  # Busca lo que el usuario escribió
+    name = request.POST.get('query', '')  # Recibe y busca lo que el usuario escribió. Cuando Django recibe el formulario, lo recibe en forma de objeto. El objeto es el REQUEST; .POST es el "diccionario", y .get('query') es la clave en ese diccionario
+    if name != '': # Si el usuario no escribió algo vacío entonces...
+        images = services.filterByCharacter(name)  #  me trae la lista filtrada por nombre (reutiliza la función filterByCharacter(name) en services.py)
+        favourite_list = []  #  Se mantiene la lista vacía para evitar errores con el template (home.html)
+        return render(request, 'home.html', { 'images': images, 'favourite_list': favourite_list })  #  Funcion render (parámetros), devuelve el template con las imágenes filtradas (construye la página con las imágenes filtradas)
+    # request es el objeto, home.html la plantilla HTML, images contiene los Pokémon a mostrar, y favourite_list la lista vacía
+    else: # Si no se escribió nada...
+        return redirect('home')  # redirige a la galería completa
 
-    # Si se ingresó algo, realizamos la búsqueda
-    if name != '':
-        # Llamo a todos los Pokémon disponibles (sin filtrar)
-        all_pokemons = services.getAllImages() or []  #  Me trae la lista completa desde la API ##hice lo mismo, agregué el or 
 
-        # Lista donde guardaré solo los que coincidan con el nombre buscado
-        images = []  #  Acá voy a guardar los que matchean
-
-        # Me fijo uno por uno si el nombre de cada Pokémon incluye lo que el usuario escribió.
-        for card in all_pokemons:
-            if name.lower() in card.name.lower():  #  Comparación sin importar mayúsculas
-                images.append(card)  #  Si coincide, lo agrego a la lista final
-
-        # Lista de favoritos vacía por ahora
-        favourite_list = []  #  Se mantiene para compatibilidad con el template
-
-        # Devuelvo el template con las imágenes filtradas
-        return render(request, 'home.html', { 'images': images, 'favourite_list': favourite_list })  #  Muestra resultados
-
-    # Si no se escribió nada, redirige a la galería completa
-    return redirect('home')  #  Caso en que no se escribió nada
-
-# función utilizada para filtrar por el tipo del Pokemon
+# función utilizada para filtrar por el tipo del Pokemon (desde los botones fuego - agua - planta). METODO GET METODO POST (trabaja con los valores enviados en la url)
 def filter_by_type(request):
-    # 1. Obtenemos el valor del tipo desde los parámetros de la URL (?type=agua, fuego, etc.).
-    # Usamos GET porque generalmente los botones usan método GET, no POST.(Cambiamos el codigo que decia POST por GET)
-    type = request.GET.get('type', '')
-
-    # 2. Verificamos que se haya enviado algún tipo. Si no hay nada, redirigimos al home.
-    if type != '':
-        # 3. Llamamos a la función de servicios que devuelve solo los pokémon de ese tipo.
-        images = services.filterByType(type)
-
-        # 4. (Temporal) Lista vacía de favoritos.
-        favourite_list = []
-
-        # 5. Renderizamos el home, pero esta vez solo con los pokémon filtrados.
-        return render(request, 'home.html', { 'images': images, 'favourite_list': favourite_list })
-    else:
-        # 6. Si no se especificó ningún tipo, simplemente redireccionamos al home sin filtrar.
+    # 1. El valor del tipo (siendo type la clave) está codificado dentro de cada botón; y cada valor está definido en home.html como un parámetro a tomar por la URL filter_by_type/?type= (water, fire, etc.), 
+    type = request.GET.get('type', '') # Cambiamos el codigo, reemplazando POST por GET, ya que generalmente los botones usan método GET, no POST.
+    if type != '': # Si el usuario no envia algo vacío entonces...
+        images = services.filterByType(type) # 3. Llamamos a la función de servicios que devuelve solo los pokémon de ese tipo.
+        favourite_list = [] # 4. (Temporal) Lista vacía de favoritos.
+        return render(request, 'home.html', { 'images': images, 'favourite_list': favourite_list }) # 5. Renderizamos home.html, pero esta vez solo con los pokémon filtrados.
+    else: # 6. Si no se especificó ningún tipo, simplemente redireccionamos al home sin filtrar.
         return redirect('home')
 
 
